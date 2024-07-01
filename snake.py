@@ -70,33 +70,39 @@ class snakeGame:
                 elif event.key == pygame.K_UP:
                     self.direction = Direction.UP
                 elif event.key == pygame.K_DOWN:
-                    self.direction = Direction.DOWN
+                    self.direction = Direction.DOWN        
+            
+            # movement
+            self.move(self.direction)
+            self.snake.insert(0, self.head) 
+            
+            
+            # new food
+            if self.head == self.food:
+                self.score +=1
+                self.foodPlacement()
+            else:
+                self.snake.pop()
+            
+            
+            # update ui and clock
+            self.update_ui()
+            self.clock.tick(speed)
+            
+            
+            # check and return game over and score
+            game_over = False 
+            if self.collide():
+                game_over = True
+                return game_over, self.score
 
-        
-        # movement
-        self.move(self.direction)
-        self.snake.insert(0, self.head) 
-        
-        
-        # new food
-        
-        
-        
-        # update ui and clock
-        self.update_ui()
-        self.clock.tick(speed)
-        
-        
-        # check and return game over and score
-        game_over = False 
-        if self.colide(self):
-            game_over = True
-            return game_over, self.score
+
 
     def collide(self):
      # hits boundary
         if self .head.x > self.w - blockSize or self.head.x < 0 or self.head.y > self.h - blockSize or self.head.y < 0:
             return True
+        
     
     
      # hits itself
@@ -106,20 +112,20 @@ class snakeGame:
     
     
     
-     def update_ui(self):
-        self.display.fill(color_3)
-         
-        for pt in self.snake:
-             pygame.draw.rect(self.display, color_4, pygame.Rect(pt.x, pt.y, blockSize, blockSize))
-             pygame.draw.rect(self.display, color_5, pygame.Rect(pt.x +4, pt.y +4, 12, 12))
-             
-        pygame.draw.rect(self.display, color_1, pygame.Rect(self.food.x, self.food.y,blockSize,blockSize))
-         
-        text = font.render("Score: "+ str(self.score),True,color_2)
-        self.display.blit(text, [0, 0])
-        pygame.display.flip()
-         
-         
+    def update_ui(self):
+       self.display.fill(color_3)
+        
+       for pt in self.snake:
+            pygame.draw.rect(self.display, color_4, pygame.Rect(pt.x, pt.y, blockSize, blockSize))
+            pygame.draw.rect(self.display, color_5, pygame.Rect(pt.x +4, pt.y +4, 12, 12))
+            
+       pygame.draw.rect(self.display, color_1, pygame.Rect(self.food.x, self.food.y,blockSize,blockSize))
+        
+       text = font.render("Score: "+ str(self.score),True,color_2)
+       self.display.blit(text, [0, 0])
+       pygame.display.flip()
+        
+        
          
     def move(self, direction):
          x = self.head.x
@@ -142,7 +148,7 @@ if __name__ =='__main__':
     
     # game loop
     while True:
-        game_over,score = game.play_step()
+        game_over, score = game.play_step()
         
         if game_over == True:
             break
