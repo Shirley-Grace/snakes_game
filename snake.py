@@ -11,7 +11,7 @@ class Direction(Enum):
     
 Point = namedtuple('point','x, y')
 blockSize = 20
-speed = 30
+speed = 18
 color_1 = (255, 0, 0)   # red
 color_2 = (255, 255, 255)   # white
 color_3 = (0, 0, 0)   # black
@@ -146,7 +146,6 @@ class snakeGame:
 if __name__ =='__main__':
     game = snakeGame()
     
-    # game loop
     while True:
         game_over, score = game.play_step()
         
