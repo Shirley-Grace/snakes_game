@@ -5,7 +5,7 @@ from collections import namedtuple
 
 pygame.init()
 font = pygame.font.Font('Merathus.ttf', 25)
-#font = pygame.font.SysFont('arial', 25)
+# font = pygame.font.Font('Thunderous One Free.ttf', 25)
 
 class Direction(Enum):
     RIGHT = 1
@@ -15,30 +15,27 @@ class Direction(Enum):
     
 Point = namedtuple('Point', 'x, y')
 
-# rgb colors
 color_1 = (255, 255, 255)
 color_2 = (200,0,0)
 color_4 = (161, 252, 223) #green1
 color_5= (127, 216, 190) #green2
 color_6= (0,0,0)
-
-
 blockSize = 20
-SPEED = 10
+speed = 10
 
 class SnakeGame:
     
     def __init__(self, w=640, h=480):
         self.w = w
         self.h = h
-        # init display
+        
+        # display
         self.display = pygame.display.set_mode((self.w, self.h))
-        pygame.display.set_caption('Snake Game')
+        pygame.display.set_caption('SNAKE GAME BOUNDARY')
         self.clock = pygame.time.Clock()
         
-        # init game state
+        # gameplay state
         self.direction = Direction.RIGHT
-        
         self.head = Point(self.w/2, self.h/2)
         self.snake = [self.head, 
                       Point(self.head.x-blockSize, self.head.y),
@@ -55,12 +52,14 @@ class SnakeGame:
         if self.food in self.snake:
             self.foodPlacement()
         
+        
     def play_step(self):
-        # 1. collect user input
+        # user input
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
+                
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
                     self.direction = Direction.LEFT
@@ -71,31 +70,31 @@ class SnakeGame:
                 elif event.key == pygame.K_DOWN:
                     self.direction = Direction.DOWN
         
-        # 2. movement
+        # movement
         self._move(self.direction) 
         self.snake.insert(0, self.head)
         
-        # 3. check if game over
+        # check if game over
         game_over = False
-        if self._is_collision():
+        if self.collide():
             game_over = True
             return game_over, self.score
             
-        # 4. food placement
+        # food placement
         if self.head == self.food:
             self.score += 1
             self.foodPlacement()
         else:
             self.snake.pop()
         
-        # 5. update ui and clock
+        # update ui and clock
         self._update_ui()
-        self.clock.tick(SPEED)
+        self.clock.tick(speed)
         
-        # 6. return game over and score
+        # return game over and score
         return game_over, self.score
     
-    def _is_collision(self):
+    def collide(self):
         # hits boundary
         if self.head.x > self.w - blockSize or self.head.x < 0 or self.head.y > self.h - blockSize or self.head.y < 0:
             return True
